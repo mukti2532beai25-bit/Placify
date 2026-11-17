@@ -1,0 +1,9 @@
+﻿bin/
+*.class
+data/*.dat
+data/*.csv
+config/database.properties
+.vscode/
+.idea/
+*.iml
+.DS_Store
