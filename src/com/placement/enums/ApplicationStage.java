@@ -1,8 +1,9 @@
 package com.placement.enums;
 
 public enum ApplicationStage {
-    APPLICATION,
-    DOCUMENTATION,
-    INTERVIEW,
-    OFFER
+    APPLIED,
+    SHORTLISTED,
+    INTERVIEW_SCHEDULED,
+    INTERVIEW_COMPLETED,
+    RESULT_DECLARED
 }
