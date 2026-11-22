@@ -9,18 +9,18 @@ public class Application implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final int applicationId;
-    private final Student student;
-    private final Drive drive;
+    private final int studentId;
+    private final int driveId;
     private final LocalDate appliedDate;
     private ApplicationStage stage;
     private ResultStatus result;
     private boolean offerAccepted;
     private String offerType;
 
-    public Application(int applicationId, Student student, Drive drive, LocalDate appliedDate) {
+    public Application(int applicationId, int studentId, int driveId, LocalDate appliedDate) {
         this.applicationId = applicationId;
-        this.student = student;
-        this.drive = drive;
+        this.studentId = studentId;
+        this.driveId = driveId;
         this.appliedDate = appliedDate;
         this.stage = ApplicationStage.APPLIED;
         this.result = ResultStatus.PENDING;
@@ -29,10 +29,8 @@ public class Application implements Serializable {
     }
 
     public int getApplicationId() { return applicationId; }
-    public Student getStudent() { return student; }
-    public Drive getDrive() { return drive; }
-    public int getStudentId() { return student.getId(); }
-    public int getDriveId() { return drive.getDriveId(); }
+    public int getStudentId() { return studentId; }
+    public int getDriveId() { return driveId; }
     public LocalDate getAppliedDate() { return appliedDate; }
     public ApplicationStage getStage() { return stage; }
     public void setStage(ApplicationStage stage) { this.stage = stage; }
@@ -43,9 +41,11 @@ public class Application implements Serializable {
     public String getOfferType() { return offerType; }
     public void setOfferType(String offerType) { this.offerType = offerType; }
 
-    @Override public String toString() {
-        return String.format("App #%d | %s -> %s (%s) | applied %s | stage: %s | result: %s%s",
-                applicationId, student.getFullName(), drive.getCompany().getName(), drive.getRole(),
-                appliedDate, stage, result, offerType == null ? "" : " [" + offerType + "]");
+    @Override
+    public String toString() {
+        return String.format("App #%d | student %d -> drive %d | applied %s | stage: %s | result: %s%s",
+                applicationId, studentId, driveId, appliedDate, stage, result,
+                offerType == null ? "" : " [" + offerType + "]");
     }
+    
 }
