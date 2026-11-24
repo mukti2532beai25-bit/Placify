@@ -134,7 +134,7 @@ public class StudentMenu {
         boolean found = false;
         System.out.println("\n--- My Applications ---");
         for (Application app : DataStore.applications) {
-            if (app.getStudent().getId() == loggedInStudent.getId()) {
+            if (app.getStudentId() == loggedInStudent.getId()) {
                 System.out.println(app);
                 found = true;
             }
