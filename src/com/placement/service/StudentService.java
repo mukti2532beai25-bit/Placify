@@ -6,7 +6,6 @@ import com.placement.model.Student;
 import com.placement.repository.DataStore;
 import com.placement.util.StudentCgpaComparator;
 import com.placement.util.ValidationUtils;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -50,8 +49,6 @@ public class StudentService {
         Collections.sort(sorted, new StudentCgpaComparator());
         return sorted;
     }
-
-    // Demonstrates explicit Iterator traversal (Lectures 59-60)
     public List<Student> filterEligibleStudents(String branchName, double minCgpa, int maxBacklogs) {
         List<Student> result = new ArrayList<>(DataStore.students);
         Iterator<Student> it = result.iterator();

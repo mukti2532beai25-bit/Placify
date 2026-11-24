@@ -15,8 +15,6 @@ public class Student extends User {
     private int graduationBatch;
     private Branch branch;
     private String[] phones;
-
-    // Constructor chaining using this(...)
     public Student(int id, String email, String password, String firstName, String lastName,
                    double cgpa, int backlogs, Branch branch, String primaryPhone) {
         this(id, email, password, firstName, lastName, cgpa, backlogs,

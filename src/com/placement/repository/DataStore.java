@@ -7,8 +7,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class DataStore {
-
-    // Shared Collections across M1, M2, and M3
     public static final Map<Integer, User> usersById = new HashMap<>();
     public static final Map<String, User> usersByEmail = new HashMap<>();
     public static final List<Student> students = new ArrayList<>();
@@ -23,7 +21,6 @@ public class DataStore {
     public static final List<InterviewExperience> experiences = new ArrayList<>();
     public static final Set<TopicTag> topicTags = new HashSet<>();
 
-    // Static ID Counters
     private static int userIdSeq = 1;
     private static int branchIdSeq = 1;
     private static int companyIdSeq = 1;
@@ -39,10 +36,7 @@ public class DataStore {
     public static int nextApplicationId() { return applicationIdSeq++; }
     public static int nextExperienceId() { return experienceIdSeq++; }
     public static int nextTagId() { return tagIdSeq++; }
-
-    // Static initialization block loading sample records
     static {
-        // 1. Branches
         Branch cse = new Branch(nextBranchId(), "CSE", "Computer Science");
         Branch it  = new Branch(nextBranchId(), "IT", "Computer Science");
         Branch ece = new Branch(nextBranchId(), "ECE", "Electronics");
@@ -51,8 +45,6 @@ public class DataStore {
         branches.put(it.getBranchId(), it);
         branches.put(ece.getBranchId(), ece);
         branches.put(me.getBranchId(), me);
-
-        // 2. Students
         Student s1 = new Student(nextUserId(), "aarav.singh@college.edu", "pass123",
                 "Aarav", "Singh", 8.70, 0, LocalDate.of(2005, 3, 14), 2027,
                 cse, new String[]{"9812300001", "9812300011"});
@@ -74,8 +66,6 @@ public class DataStore {
             usersById.put(s.getId(), s);
             usersByEmail.put(s.getEmail().toLowerCase(), s);
         }
-
-        // 3. Admins
         PlacementAdmin a1 = new PlacementAdmin(nextUserId(), "kavita.malhotra@college.edu", "admin123",
                 "Dr. Kavita Malhotra", "Placement Head", "9876500011", "101");
         PlacementAdmin a2 = new PlacementAdmin(nextUserId(), "rohit.sharma@college.edu", "admin123",
@@ -86,8 +76,6 @@ public class DataStore {
             usersById.put(a.getId(), a);
             usersByEmail.put(a.getEmail().toLowerCase(), a);
         }
-
-        // 4. Topic Tags
         topicTags.add(new TopicTag(nextTagId(), "DSA"));
         topicTags.add(new TopicTag(nextTagId(), "DBMS"));
         topicTags.add(new TopicTag(nextTagId(), "SQL"));

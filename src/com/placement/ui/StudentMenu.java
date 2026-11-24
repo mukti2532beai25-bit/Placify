@@ -9,17 +9,21 @@ import com.placement.repository.DataStore;
 import com.placement.service.ApplicationService;
 import com.placement.service.DriveService;
 import com.placement.service.StudentService;
-import com.placement.util.InputHelper;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
 public class StudentMenu {
     private final Student loggedInStudent;
-    private final Scanner scanner;
+    public Scanner scanner;
     private final StudentService studentService;
     private final DriveService driveService;
     private final ApplicationService applicationService;
+
+    public StudentMenu(Student student) {
+        this(student, new Scanner(System.in));
+    }
 
     public StudentMenu(Student student, Scanner scanner) {
         this.loggedInStudent = student;
@@ -30,7 +34,7 @@ public class StudentMenu {
     }
 
     public void show() {
-        int choice;
+        int choice = -1;
         do {
             System.out.println("\n==========================================");
             System.out.println(" STUDENT DASHBOARD - " + loggedInStudent.getFullName());
@@ -43,8 +47,16 @@ public class StudentMenu {
             System.out.println("6. Track My Applications");
             System.out.println("7. Open Interview Prep Archive");
             System.out.println("0. Logout");
+            System.out.print("Enter choice: ");
 
-            choice = InputHelper.readInt(scanner, "Enter choice: ");
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine(); // consume trailing newline
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a number between 0 and 7.");
+                scanner.nextLine(); // clear bad token from buffer
+                continue;
+            }
 
             switch (choice) {
                 case 1:
@@ -88,18 +100,26 @@ public class StudentMenu {
     }
 
     private void handleUpdateAcademic() {
-        double cgpa = InputHelper.readDouble(scanner, "Enter new CGPA (0 - 10): ");
-        int backlogs = InputHelper.readInt(scanner, "Enter active backlogs: ");
         try {
+            System.out.print("Enter new CGPA (0 - 10): ");
+            double cgpa = scanner.nextDouble();
+            System.out.print("Enter active backlogs: ");
+            int backlogs = scanner.nextInt();
+            scanner.nextLine(); 
+
             studentService.updateAcademicProfile(loggedInStudent.getId(), cgpa, backlogs);
             System.out.println("Profile updated successfully!");
+        } catch (InputMismatchException e) {
+            System.out.println("Error: Please enter valid numeric values for CGPA and backlogs.");
+            scanner.nextLine(); 
         } catch (InvalidInputException | RecordNotFoundException e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
 
     private void handleAddPhone() {
-        String phone = InputHelper.readNonEmptyString(scanner, "Enter 10-digit phone number: ");
+        System.out.print("Enter 10-digit phone number: ");
+        String phone = scanner.nextLine().trim();
         try {
             studentService.addStudentPhone(loggedInStudent.getId(), phone);
             System.out.println("Phone number added!");
@@ -121,10 +141,16 @@ public class StudentMenu {
     }
 
     private void handleApplyToDrive() {
-        int driveId = InputHelper.readInt(scanner, "Enter Drive ID to apply: ");
         try {
+            System.out.print("Enter Drive ID to apply: ");
+            int driveId = scanner.nextInt();
+            scanner.nextLine(); // consume trailing newline
+
             Application app = applicationService.apply(loggedInStudent.getId(), driveId);
             System.out.println("Application submitted! Application ID: " + app.getApplicationId());
+        } catch (InputMismatchException e) {
+            System.out.println("Error: Drive ID must be a valid integer.");
+            scanner.nextLine(); // clear invalid input
         } catch (Exception e) {
             System.out.println("Application failed: " + e.getMessage());
         }
