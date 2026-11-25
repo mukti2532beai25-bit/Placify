@@ -5,7 +5,6 @@ import com.placement.exception.RecordNotFoundException;
 import com.placement.model.Application;
 import com.placement.model.Drive;
 import com.placement.model.Student;
-import com.placement.repository.DataStore;
 import com.placement.service.ApplicationService;
 import com.placement.service.DriveService;
 import com.placement.service.StudentService;
@@ -26,11 +25,24 @@ public class StudentMenu {
     }
 
     public StudentMenu(Student student, Scanner scanner) {
+        this(student, scanner, new DriveService(), null);
+    }
+
+    // Overloaded constructor so PortalApp can pass shared DriveService & ApplicationService instances
+    public StudentMenu(Student student, Scanner scanner, DriveService driveService, ApplicationService applicationService) {
         this.loggedInStudent = student;
         this.scanner = scanner;
         this.studentService = new StudentService();
-        this.driveService = new DriveService();
-        this.applicationService = new ApplicationService();
+        this.driveService = (driveService != null) ? driveService : new DriveService();
+        this.applicationService = (applicationService != null)
+                ? applicationService
+                : new ApplicationService(this.driveService, id -> {
+                    try {
+                        return studentService.getStudentById(id);
+                    } catch (RecordNotFoundException e) {
+                        return null;
+                    }
+                });
     }
 
     public void show() {
@@ -105,13 +117,13 @@ public class StudentMenu {
             double cgpa = scanner.nextDouble();
             System.out.print("Enter active backlogs: ");
             int backlogs = scanner.nextInt();
-            scanner.nextLine(); 
+            scanner.nextLine();
 
             studentService.updateAcademicProfile(loggedInStudent.getId(), cgpa, backlogs);
             System.out.println("Profile updated successfully!");
         } catch (InputMismatchException e) {
             System.out.println("Error: Please enter valid numeric values for CGPA and backlogs.");
-            scanner.nextLine(); 
+            scanner.nextLine();
         } catch (InvalidInputException | RecordNotFoundException e) {
             System.out.println("Error: " + e.getMessage());
         }
@@ -129,7 +141,7 @@ public class StudentMenu {
     }
 
     private void handleViewEligibleDrives() {
-        List<Drive> eligible = driveService.getEligibleDrivesForStudent(loggedInStudent);
+        List<Drive> eligible = driveService.getEligibleDrives(loggedInStudent);
         if (eligible.isEmpty()) {
             System.out.println("No eligible drives available right now.");
             return;
@@ -157,16 +169,14 @@ public class StudentMenu {
     }
 
     private void handleTrackApplications() {
-        boolean found = false;
+        List<Application> myApps = applicationService.getApplicationsForStudent(loggedInStudent.getId());
         System.out.println("\n--- My Applications ---");
-        for (Application app : DataStore.applications) {
-            if (app.getStudent().getId() == loggedInStudent.getId()) {
-                System.out.println(app);
-                found = true;
-            }
-        }
-        if (!found) {
+        if (myApps.isEmpty()) {
             System.out.println("You have not applied to any drives yet.");
+            return;
+        }
+        for (Application app : myApps) {
+            System.out.println(app);
         }
     }
 }
