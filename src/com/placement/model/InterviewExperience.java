@@ -12,6 +12,7 @@ public class InterviewExperience implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private int experienceId;
+    private int applicationId;
     private Difficulty difficulty;
     private String tips;
     private boolean isAnonymous;
@@ -19,11 +20,11 @@ public class InterviewExperience implements Serializable {
     private List<RoundDetail> rounds;
 
     public InterviewExperience(int experienceId,
-                               Difficulty difficulty,
-                               String tips,
-                               boolean isAnonymous,
-                               LocalDate datePosted,
-                               List<RoundDetail> rounds) {
+            Difficulty difficulty,
+            String tips,
+            boolean isAnonymous,
+            LocalDate datePosted,
+            List<RoundDetail> rounds) {
 
         this.experienceId = experienceId;
         this.difficulty = difficulty;
@@ -39,6 +40,14 @@ public class InterviewExperience implements Serializable {
 
     public void setExperienceId(int experienceId) {
         this.experienceId = experienceId;
+    }
+
+    public int getApplicationId() {
+        return applicationId;
+    }
+
+    public void setApplicationId(int applicationId) {
+        this.applicationId = applicationId;
     }
 
     public Difficulty getDifficulty() {
