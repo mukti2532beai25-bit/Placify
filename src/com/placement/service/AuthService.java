@@ -19,7 +19,6 @@ public class AuthService {
         ValidationUtils.validatePhone(phone);
 
         String normalizedEmail = email.trim().toLowerCase();
-        // Enforce total & disjoint specialization (no duplicate email across Student/Admin)
         if (DataStore.usersByEmail.containsKey(normalizedEmail)) {
             throw new InvalidInputException("An account with email '" + normalizedEmail + "' already exists.");
         }
