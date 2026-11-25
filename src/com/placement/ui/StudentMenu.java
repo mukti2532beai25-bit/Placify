@@ -5,10 +5,10 @@ import com.placement.exception.RecordNotFoundException;
 import com.placement.model.Application;
 import com.placement.model.Drive;
 import com.placement.model.Student;
+import com.placement.repository.DataStore;
 import com.placement.service.ApplicationService;
 import com.placement.service.DriveService;
 import com.placement.service.StudentService;
-
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -25,18 +25,13 @@ public class StudentMenu {
     }
 
     public StudentMenu(Student student, Scanner scanner) {
-        this(student, scanner, new DriveService(), null);
-    }
-
-    // Overloaded constructor so PortalApp can pass shared DriveService & ApplicationService instances
-    public StudentMenu(Student student, Scanner scanner, DriveService driveService, ApplicationService applicationService) {
         this.loggedInStudent = student;
         this.scanner = scanner;
         this.studentService = new StudentService();
-        this.driveService = (driveService != null) ? driveService : new DriveService();
-        this.applicationService = (applicationService != null)
-                ? applicationService
-                : new ApplicationService(this.driveService, id -> {
+        this.driveService = new DriveService();
+        this.applicationService = new ApplicationService(
+                driveService,
+                id -> {
                     try {
                         return studentService.getStudentById(id);
                     } catch (RecordNotFoundException e) {
@@ -169,14 +164,16 @@ public class StudentMenu {
     }
 
     private void handleTrackApplications() {
-        List<Application> myApps = applicationService.getApplicationsForStudent(loggedInStudent.getId());
+        boolean found = false;
         System.out.println("\n--- My Applications ---");
-        if (myApps.isEmpty()) {
-            System.out.println("You have not applied to any drives yet.");
-            return;
+        for (Application app : DataStore.applications) {
+            if (app.getStudentId() == loggedInStudent.getId()) {
+                System.out.println(app);
+                found = true;
+            }
         }
-        for (Application app : myApps) {
-            System.out.println(app);
+        if (!found) {
+            System.out.println("You have not applied to any drives yet.");
         }
     }
 }
